@@ -6,14 +6,24 @@ using namespace std;
 
 int main(){
 	Guarabo *t;
-	//Serial *s;
 	try {	
 		t = new Guarabo();//"COM8"
-		int grau;
-		while(cin>>grau){
-		t->andarTras_distancia(grau);
-	//	t->virarEsquerda(grau);
-		}
+	/*	t->andarFrente_tempo(2.3);//2.2
+		t->virarEsquerda(70);
+		t->andarFrente_tempo(1);
+		t->virarDireita(70);
+		t->andarFrente_tempo(1);
+		t->virarEsquerda(70);
+		t->andarFrente_tempo(1.2);
+		t->virarEsquerda(72);
+		t->andarFrente_tempo(1.2);	
+		t->virarDireita(70); */
+	/*	t->andarFrente_tempo(2);
+		t->virarDireita(70);	
+		t->andarFrente_tempo(2.3);
+		t->virarDireita(70);
+		t->andarFrente_tempo(1);*/
+		
 		delete t;
 	}
 	catch (UnknownPortException &e) {

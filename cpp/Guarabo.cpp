@@ -33,7 +33,7 @@ string conv(int tempo){ //método de converter de int para string
 		string time = Valor.str();
 		return time;
 }
-void Guarabo::andarFrente_tempo(int tempo){
+void Guarabo::andarFrente_tempo(float tempo){
 		string time = conv(tempo*1000);
 		string aux = "SETFORWARD\r",step="STEP\r",s="SETTIME ";
 		serial->Write((char*)aux.c_str(), aux.size());
@@ -48,7 +48,7 @@ void Guarabo::andarFrente_tempo(int tempo){
 		Sleep(tempo*1000+20);
 }
 
-void Guarabo::andarFrente_distancia(int dist){
+void Guarabo::andarFrente_distancia(float dist){
 		int tempo = (dist*1000)/9;
 		string time = conv(tempo);
 		string aux = "SETFORWARD\r",step="STEP\r",s="SETTIME ";
@@ -64,7 +64,7 @@ void Guarabo::andarFrente_distancia(int dist){
 		Sleep(tempo*1000+20);
 }
 
-void Guarabo::andarTras_tempo(int tempo){
+void Guarabo::andarTras_tempo(float tempo){
 		string time = conv(tempo*1000);
 		string aux = "SETREVERSE\r",step="STEP\r",s="SETTIME ";
 		serial->Write((char*)aux.c_str(), aux.size());
@@ -76,7 +76,7 @@ void Guarabo::andarTras_tempo(int tempo){
 		Sleep(tempo*1000+20);
 }
 
-void Guarabo::andarTras_distancia(int dist){
+void Guarabo::andarTras_distancia(float dist){
 		int tempo = (dist*1000)/9;
 		string time = conv(tempo);
 		string aux = "SETREVERSE\r",step="STEP\r",s="SETTIME ";
@@ -89,7 +89,7 @@ void Guarabo::andarTras_distancia(int dist){
 		Sleep(tempo*1000+20);
 }
 
-void Guarabo::virarDireita(int grau){
+void Guarabo::virarDireita(float grau){
 		float tempo = grau/90.0;
 		string time = conv(tempo*1000);
 		string aux = "SETREVERSE\r", step = "STEP\r", s = "SETTIME ", giro = "SETGIRO\r";
@@ -103,7 +103,7 @@ void Guarabo::virarDireita(int grau){
 		serial->Write((char*)step.c_str(),step.size());
 		Sleep(tempo*1000+20);
 }
-void Guarabo::virarEsquerda(int grau){
+void Guarabo::virarEsquerda(float grau){
 		float tempo = grau/90.0;
 		string time = conv(tempo*1000);
 		string aux = "SETFORWARD\r", step = "STEP\r", s = "SETTIME ", giro = "SETGIRO\r";

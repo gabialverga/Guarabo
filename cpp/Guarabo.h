@@ -8,17 +8,17 @@ class Guarabo{
 		
 		void setMotor();
 		
-		void andarFrente_tempo(int tempo);
+		void andarFrente_tempo(float tempo);
 		
-		void andarFrente_distancia(int dist);
+		void andarFrente_distancia(float dist);
 		
-		void andarTras_tempo(int tempo);
+		void andarTras_tempo(float tempo);
 		
-		void andarTras_distancia(int dist);
+		void andarTras_distancia(float dist);
 		
-		void virarDireita(int grau);
+		void virarDireita(float grau);
 		
-		void virarEsquerda(int grau);
+		void virarEsquerda(float grau);
 		
 		bool verificaPorta();
 		
