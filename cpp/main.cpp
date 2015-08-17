@@ -8,6 +8,7 @@ int main(){
 	Guarabo *t;
 	try {	
 		t = new Guarabo();
+		cout<<t->getDistancia();
 		delete t;
 	}
 	catch (UnknownPortException &e) {
