@@ -6,8 +6,7 @@
 #include "Guarabo.h"
 using namespace std;
 
-
-Guarabo::Guarabo() {
+Guarabo::Guarabo() { //construtor sem parâmetro que encontra a porta correta para conexão
 		string porta; 
 		bool verifica = verificaPorta();
 		if(!verifica){
@@ -16,11 +15,11 @@ Guarabo::Guarabo() {
 		}
 		setMotor();
 }
-Guarabo::Guarabo(string porta){
+Guarabo::Guarabo(string porta){ //construtor recebendo o identificador da porta saerial para conectar
 	serial = new Serial(porta);
 	setMotor();	
 }
-void Guarabo::setMotor(){
+void Guarabo::setMotor(){ //método de define a potência dos motores
 	string com = "POWL 55\r";
 	serial->Write((char*)com.c_str(), com.size());
 	string com2 = "POWR 47\r";
@@ -33,7 +32,7 @@ string conv(int tempo){ //método de converter de int para string
 		string time = Valor.str();
 		return time;
 }
-void Guarabo::andarFrente_tempo(float tempo){
+void Guarabo::andarFrente_tempo(float tempo){ //método de andar para frente recebendo como parâmetro o tempo
 		string time = conv(tempo*1000);
 		string aux = "SETFORWARD\r",step="STEP\r",s="SETTIME ";
 		serial->Write((char*)aux.c_str(), aux.size());
@@ -48,7 +47,7 @@ void Guarabo::andarFrente_tempo(float tempo){
 		Sleep(tempo*1000+20);
 }
 
-void Guarabo::andarFrente_distancia(float dist){
+void Guarabo::andarFrente_distancia(float dist){ // método de andar para frente recebendo como parâmetro a distância
 		int tempo = (dist*1000)/9;
 		string time = conv(tempo);
 		string aux = "SETFORWARD\r",step="STEP\r",s="SETTIME ";
@@ -64,7 +63,7 @@ void Guarabo::andarFrente_distancia(float dist){
 		Sleep(tempo*1000+20);
 }
 
-void Guarabo::andarTras_tempo(float tempo){
+void Guarabo::andarTras_tempo(float tempo){ //método de andar para trás recebendo o tempo como parâmetro
 		string time = conv(tempo*1000);
 		string aux = "SETREVERSE\r",step="STEP\r",s="SETTIME ";
 		serial->Write((char*)aux.c_str(), aux.size());
@@ -76,7 +75,7 @@ void Guarabo::andarTras_tempo(float tempo){
 		Sleep(tempo*1000+20);
 }
 
-void Guarabo::andarTras_distancia(float dist){
+void Guarabo::andarTras_distancia(float dist){ // método de andar para trás recebendo a distância
 		int tempo = (dist*1000)/9;
 		string time = conv(tempo);
 		string aux = "SETREVERSE\r",step="STEP\r",s="SETTIME ";
@@ -89,7 +88,7 @@ void Guarabo::andarTras_distancia(float dist){
 		Sleep(tempo*1000+20);
 }
 
-void Guarabo::virarDireita(float grau){
+void Guarabo::virarDireita(float grau){ // método de virar à direita recebendo como parâmetr o ângulo
 		float tempo = grau/90.0;
 		string time = conv(tempo*1000);
 		string aux = "SETREVERSE\r", step = "STEP\r", s = "SETTIME ", giro = "SETGIRO\r";
@@ -103,7 +102,7 @@ void Guarabo::virarDireita(float grau){
 		serial->Write((char*)step.c_str(),step.size());
 		Sleep(tempo*1000+20);
 }
-void Guarabo::virarEsquerda(float grau){
+void Guarabo::virarEsquerda(float grau){ // método de virar à diretia recebendo o ângulo como parâmetro
 		float tempo = grau/90.0;
 		string time = conv(tempo*1000);
 		string aux = "SETFORWARD\r", step = "STEP\r", s = "SETTIME ", giro = "SETGIRO\r";
@@ -116,7 +115,7 @@ void Guarabo::virarEsquerda(float grau){
 		Sleep(tempo*1000+20);
 }
 
-bool Guarabo::verificaPorta(){
+bool Guarabo::verificaPorta(){ // método que encontra a porta serial de conexão com o robô
 		string p = "COM", porta;
 		char retorno[3];
 		string comando_guarabo = "SETGIRO\r";
@@ -124,29 +123,24 @@ bool Guarabo::verificaPorta(){
 			porta = p;
 			porta += conv(i);
 			try {
-			//	cout<<"Testando porta " << porta << endl;
 				serial = new Serial(porta);
-			//	cout<<"Abriu porta"<<endl;
-				//serial->Read(retorno,2);
 				serial->Write((char*)comando_guarabo.c_str(),comando_guarabo.size());
 				Sleep(2000);
 				serial->Read(retorno,2);
 				retorno[2]='\0';
-			//	cout<<"RETORNO: " << retorno << endl;
 				if(strcmp (retorno,"OK") == 0){
 					return true;
 				}
 					
 			}
 			catch (UnknownPortException &e) {
-			//	cout<<"Porta " << porta << " nao e valida" << endl;
 			}
 		}
 		return false;
 }
 
 
-int Guarabo::getDistancia(){
+int Guarabo::getDistancia(){ // método de encontrar a distância de um obstáculo
 	string sen = "SENGET\r";
 	char distancia[3];
 	int distancia_int;
