@@ -28,7 +28,7 @@ void Guarabo::setMotor(){  //método de define a potência dos motores
 	serial->Write((char*)com2.c_str(), com2.size());
 }
 
-string conv(int tempo){ //método de converter de int para string
+string conv(float tempo){ //método de converter de int para string
 		stringstream Valor;
 		Valor << tempo;
 		string time = Valor.str();
@@ -47,9 +47,9 @@ void Guarabo::andarFrente_tempo(float tempo){ //método de andar para frente rece
 }
 
 void Guarabo::andarFrente_distancia(float dist){ // método de andar para frente recebendo como parâmetro a distância
-		int tempo = ((dist+2.1667)/8.3036);//(0.1845*(dist*dist)+6.8274*dist+0.0476);  OK OK
-		cout<<tempo<<endl;
-		string time = conv(tempo);
+	//	float tempo = ((dist+2.167)/8.3036);//(0.1845*(dist*dist)+6.8274*dist+0.0476);  OK OK
+		float tempo = (0.12*dist + 0.281); // versão 2.0
+		string time = conv(tempo*1000);cout<<time<<endl;
 		string aux = "SETFORWARD\r",step="STEP\r",s="SETTIME ";
 		serial->Write((char*)aux.c_str(), aux.size());
 		Sleep(1000);
@@ -57,7 +57,7 @@ void Guarabo::andarFrente_distancia(float dist){ // método de andar para frente 
 		serial->Write((char*)s.c_str(),s.size());
 		Sleep(1000);	
 		serial->Write((char*)step.c_str(),step.size());
-		Sleep(tempo+20);
+		Sleep((tempo*1000)+20);
 }
 
 void Guarabo::andarTras_tempo(float tempo){  //método de andar para trás recebendo o tempo como parâmetro
@@ -73,8 +73,9 @@ void Guarabo::andarTras_tempo(float tempo){  //método de andar para trás receben
 }
 
 void Guarabo::andarTras_distancia(float dist){ // método de andar para trás recebendo a distância
-		int tempo = ((dist-2)/(7.2)); // Ok Ok
-		string time = conv(tempo);
+	//	float tempo = ((dist-2)/(7.2)); // Ok Ok
+		float tempo = (0.138*dist+0.285); // versão 2.0
+		string time = conv(tempo*1000);
 		string aux = "SETREVERSE\r",step="STEP\r",s="SETTIME ";
 		serial->Write((char*)aux.c_str(), aux.size());
 	    Sleep(1000);
@@ -86,7 +87,8 @@ void Guarabo::andarTras_distancia(float dist){ // método de andar para trás rece
 }
 
 void Guarabo::virarDireita(float grau){ // método de virar à direita recebendo como parâmetro o ângulo
-		float tempo = ((grau-37.857)/(48.571)); // Ok Ok 
+	//	float tempo = ((grau-37.857)/(48.571)); // Ok Ok 
+		float tempo = (0.014*grau+0.112); // versão 2.0
 		string time = conv(tempo*1000);
 		string aux = "SETREVERSE\r", step = "STEP\r", s = "SETTIME ", giro = "SETGIRO\r";
 		serial->Write((char*)aux.c_str(), aux.size());
@@ -100,7 +102,7 @@ void Guarabo::virarDireita(float grau){ // método de virar à direita recebendo c
 		Sleep(tempo*1000+20);
 }
 void Guarabo::virarEsquerda(float grau){// método de virar à esquerda recebendo o ângulo como parâmetro
-		float tempo = grau;
+		float tempo = grau*0.1326;//(5.805*M_E-3*grau+0.093);
 		string time = conv(tempo*1000);
 		cout<<"tempo "<<time<<endl;
 		string aux = "SETFORWARD\r", step = "STEP\r", s = "SETTIME ", giro = "SETGIRO\r";

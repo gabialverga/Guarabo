@@ -7,50 +7,11 @@ def to_ms(tempo):
 
 class Guarabo(object):
 
-  #  def __init__(self, porta):
-   #     self.serial = serial.Serial(porta, 9600)
-    #    self.serial.write("POWL 55\n\r")
-     #   self.serial.write("POWR 47\n\r")
+    def __init__(self, porta):
+        self.serial = serial.Serial(porta, 9600)
+        self.serial.write("POWL 100\n\r")
+        self.serial.write("POWR 80\n\r")
      
-    def __init__(self): #Construtor da classe
-        verifica = self.verifica_porta()
-        print verifica
-        if(verifica != None):
-            print "aqui"
-            self.serial = serial.Serial(verifica, 9600)
-            self.serial.write("POWL 55\n\r")
-            self.serial.write("POWR 47\n\r")
-        else:
-            print "Nao foi possivel conectar!"
-                
-
-    def verifica_porta(self):
-        #p = "COM"
-        lista = list(serial.tools.list_ports.comports())
-        for i in range(len(lista)):
-            #porta = p
-            #porta+=str(i)
-            print lista[i]
-            try:
-                self.s = serial.Serial(lista[i],9600,None,None,False,False,None,False,None)
-                self.s.write("SETGIRO\n\r")
-                sleep(1)
-                retorno = self.s.read(2)
-                retorno+='\0'
-                if(strcmp(retorno,"OK") == 0):
-                    print "here!!"
-                    return lista[i]
-                #else:
-                    #retorno = self.s.read(2)
-                    #retorno = "OK"
-                    #print "help!!"
-                    #print "Conectou!!!!!!!!!!!!!"
-                    #porta+=str(i+1)
-                    #return lista[i]
-            except IOError:
-                print "Ratunamatata"
-        return None
-    
     def andar_frente_tempo(self, tempo):
         t = to_ms(tempo)
         self.serial.write("SETFORWARD\n\r")
@@ -59,13 +20,13 @@ class Guarabo(object):
         self.serial.write("STEP\n\r")
         sleep(tempo)
 
-	def andar_frente_distancia(self, distancia):
-		tempo = ((distancia+2.1667)/8.3036)
-		time = to_ms(tempo)
-		self.serial.write("SETFORWARD\n\r")
-		self.serial.write("SETTIME {}\n\r".format(time))
-		self.serial.write("STEP\n\r")
-		sleep(tempo+20)
+    def andar_frente_distancia(self, distancia):
+        tempo = (0.12*distancia + 0.281)
+        time = to_ms(tempo)
+        self.serial.write("SETFORWARD\n\r")
+        self.serial.write("SETTIME {}\n\r".format(time))
+        self.serial.write("STEP\n\r")
+        sleep(tempo+20)
 		
     def andar_tras_tempo(self, tempo):
         t = to_ms(tempo)
@@ -75,10 +36,10 @@ class Guarabo(object):
         self.serial.write("STEP\n\r")
         sleep(tempo)
 		
-	def andar_tras_tempo_distancia(self, distancia):
-		tempo = ((distancia-2)/7.2)
-		time = to_ms(tempo)
-		self.serial.write("SETREVERSE\n\r")
+    def andar_tras_distancia(self, distancia):
+	tempo = (0.138*distancia+0.285)
+	time = to_ms(tempo)
+	self.serial.write("SETREVERSE\n\r")
         self.serial.write("SETTIME {}\n\r".format(time))
         self.serial.write("STEP\n\r")
         sleep(tempo+20)
@@ -95,13 +56,13 @@ class Guarabo(object):
         sleep(tempo)
         self.serial.write("SETFORWARD\n\r")
 
-	def turn_right(sefl, angulo):
-		tempo = ((grau-37.857)/(48.571))
-		time = to_ms(tempo)
-		self.serial.write("SETREVERSE\n\r")
-		self.serial.write("SETGIRO\n\r")
-		self.serial.write("SETTIME {}\n\r".format(time))
-		self.serial.write("STEP\n\r")
+    def turn_right(self, angulo):
+	tempo = (0.014*angulo+0.112)
+	time = to_ms(tempo)
+	self.serial.write("SETREVERSE\n\r")
+	self.serial.write("SETGIRO\n\r")
+	self.serial.write("SETTIME {}\n\r".format(time))
+	self.serial.write("STEP\n\r")
         sleep(tempo)
         self.serial.write("SETFORWARD\n\r")
 	
@@ -115,18 +76,12 @@ class Guarabo(object):
         self.serial.write("STEP\n\r")
         sleep(tempo)
 
-	def turn_left(self, angulo):
-		#Falta a regressão
+    #def turn_left(self, angulo):
+	#Falta a regressao
 		
     def get_distancia(self):
         self.serial.flushInput()
-        a = self.seria000l.readline()
+        a = self.serial.readline()
         b =  self.serial.readline()
         self.serial.write("SENGET\n\r")
         return self.serial.readline()
-
-print "conectando"
-gua = Guarabo() 
-print "conectou"
-gua.andar_pra_frente(2)
-
