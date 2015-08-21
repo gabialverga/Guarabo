@@ -4,7 +4,9 @@
 #include <sstream>
 #include "Serial.h"
 #include "Guarabo.h"
+#include <math.h>
 using namespace std;
+
 
 Guarabo::Guarabo() { //construtor sem parâmetro que encontra a porta correta para conexão
 		string porta; 
@@ -19,10 +21,10 @@ Guarabo::Guarabo(string porta){ //construtor recebendo o identificador da porta 
 	serial = new Serial(porta);
 	setMotor();	
 }
-void Guarabo::setMotor(){ //método de define a potência dos motores
-	string com = "POWL 55\r";
+void Guarabo::setMotor(){  //método de define a potência dos motores
+	string com = "POWL 100\r";
 	serial->Write((char*)com.c_str(), com.size());
-	string com2 = "POWR 47\r";
+	string com2 = "POWR 80\r";
 	serial->Write((char*)com2.c_str(), com2.size());
 }
 
@@ -36,34 +38,29 @@ void Guarabo::andarFrente_tempo(float tempo){ //método de andar para frente rece
 		string time = conv(tempo*1000);
 		string aux = "SETFORWARD\r",step="STEP\r",s="SETTIME ";
 		serial->Write((char*)aux.c_str(), aux.size());
-		printf("%s\n",(char *)aux.c_str());
 		Sleep(1000);
 		s += time+'\r';
 		serial->Write((char*)s.c_str(),s.size());
-		printf("%s\n",(char *)s.c_str());
-		Sleep(1000);
-		printf("%s\n",(char *)step.c_str());			
+		Sleep(1000);			
 		serial->Write((char*)step.c_str(),step.size());
 		Sleep(tempo*1000+20);
 }
 
 void Guarabo::andarFrente_distancia(float dist){ // método de andar para frente recebendo como parâmetro a distância
-		int tempo = (dist*1000)/9;
+		int tempo = ((dist+2.1667)/8.3036);//(0.1845*(dist*dist)+6.8274*dist+0.0476);  OK OK
+		cout<<tempo<<endl;
 		string time = conv(tempo);
 		string aux = "SETFORWARD\r",step="STEP\r",s="SETTIME ";
 		serial->Write((char*)aux.c_str(), aux.size());
-		printf("%s\n",(char *)aux.c_str());
 		Sleep(1000);
 		s += time+'\r';
 		serial->Write((char*)s.c_str(),s.size());
-		printf("%s\n",(char *)s.c_str());
-		Sleep(1000);
-		printf("%s\n",(char *)step.c_str());			
+		Sleep(1000);	
 		serial->Write((char*)step.c_str(),step.size());
-		Sleep(tempo*1000+20);
+		Sleep(tempo+20);
 }
 
-void Guarabo::andarTras_tempo(float tempo){ //método de andar para trás recebendo o tempo como parâmetro
+void Guarabo::andarTras_tempo(float tempo){  //método de andar para trás recebendo o tempo como parâmetro
 		string time = conv(tempo*1000);
 		string aux = "SETREVERSE\r",step="STEP\r",s="SETTIME ";
 		serial->Write((char*)aux.c_str(), aux.size());
@@ -76,7 +73,7 @@ void Guarabo::andarTras_tempo(float tempo){ //método de andar para trás recebend
 }
 
 void Guarabo::andarTras_distancia(float dist){ // método de andar para trás recebendo a distância
-		int tempo = (dist*1000)/9;
+		int tempo = ((dist-2)/(7.2)); // Ok Ok
 		string time = conv(tempo);
 		string aux = "SETREVERSE\r",step="STEP\r",s="SETTIME ";
 		serial->Write((char*)aux.c_str(), aux.size());
@@ -88,8 +85,8 @@ void Guarabo::andarTras_distancia(float dist){ // método de andar para trás rece
 		Sleep(tempo*1000+20);
 }
 
-void Guarabo::virarDireita(float grau){ // método de virar à direita recebendo como parâmetr o ângulo
-		float tempo = grau/90.0;
+void Guarabo::virarDireita(float grau){ // método de virar à direita recebendo como parâmetro o ângulo
+		float tempo = ((grau-37.857)/(48.571)); // Ok Ok 
 		string time = conv(tempo*1000);
 		string aux = "SETREVERSE\r", step = "STEP\r", s = "SETTIME ", giro = "SETGIRO\r";
 		serial->Write((char*)aux.c_str(), aux.size());
@@ -102,9 +99,10 @@ void Guarabo::virarDireita(float grau){ // método de virar à direita recebendo c
 		serial->Write((char*)step.c_str(),step.size());
 		Sleep(tempo*1000+20);
 }
-void Guarabo::virarEsquerda(float grau){ // método de virar à diretia recebendo o ângulo como parâmetro
-		float tempo = grau/90.0;
+void Guarabo::virarEsquerda(float grau){// método de virar à esquerda recebendo o ângulo como parâmetro
+		float tempo = grau;
 		string time = conv(tempo*1000);
+		cout<<"tempo "<<time<<endl;
 		string aux = "SETFORWARD\r", step = "STEP\r", s = "SETTIME ", giro = "SETGIRO\r";
 		serial->Write((char*)giro.c_str(), giro.size());
 		Sleep(1000);
@@ -129,11 +127,12 @@ bool Guarabo::verificaPorta(){ // método que encontra a porta serial de conexão 
 				serial->Read(retorno,2);
 				retorno[2]='\0';
 				if(strcmp (retorno,"OK") == 0){
+					cout<<"-->"<<porta<<endl;
 					return true;
 				}
-					
 			}
 			catch (UnknownPortException &e) {
+				
 			}
 		}
 		return false;
@@ -144,7 +143,7 @@ int Guarabo::getDistancia(){ // método de encontrar a distância de um obstáculo
 	string sen = "SENGET\r";
 	char distancia[3];
 	int distancia_int;
-	serial->Write((char*)sen.c_str(), 6);
+	serial->Write((char*)sen.c_str(), sen.size());
 	serial->Read(distancia, 3);
 	distancia_int = atoi(distancia);
 	return distancia_int;
