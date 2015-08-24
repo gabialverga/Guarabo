@@ -15,14 +15,18 @@ class Guarabo(object):
             COM = "COM"
             porta = COM+str(i+1)
             try:
-                self.serial = serial.Serial(porta, 9600, timeout=0)
+                self.serial = self.serial.Serial(porta, 9600, timeout=0)
                 self.serial.write("SETGIRO\n\r")
+                print "HERERERERERERWERERE"
+                x = raw_input()
+                print x
                 retorno = self.serial.readline()
+                print retorno
                 if(retorno == "OK"):
                     return True
                 sleep(1)
-                print "Porta - " + porta + " - encontrada"
-            except self.serial.SerialTimeoutException:
+                print "Porta - " +porta + " - encontrada"
+            except:
                 print porta + "Nao conectou"
         return False
 

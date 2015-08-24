@@ -1,7 +1,7 @@
 import guarabo
 
 print "conectando"
-gua = guarabo.Guarabo("COM8") 
+gua = guarabo.Guarabo() 
 print "conectou"
 y = gua.get_distancia()
 print y
