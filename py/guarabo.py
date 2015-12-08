@@ -13,7 +13,7 @@ class Guarabo(object):
     def __init__(self):
         x = self.verificar_porta()
         if(not x):
-            print "nao foi possivel conectar, tente novamente!"
+            print "Nao foi possivel conectar, tente novamente!"
         else:
             print "Conectado com sucesso!!"
             self.set_motor()
@@ -24,9 +24,9 @@ class Guarabo(object):
             porta = COM+str(i+1)
             try:
                 self.serial = serial.Serial(porta, 9600, timeout=0)
-                self.serial.write(b'SETFORWARD\n\r')
+                self.serial.write(somaCaractere("SETFORWARD"), b'SETFORWARD\n\r')
                 retorno = self.serial.read(2)
-                if(retorno == "OK"):
+                if(retorno == "154 OK"):
                     return True
                 sleep(1)
             except:
